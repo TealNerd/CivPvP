@@ -1,16 +1,10 @@
 package com.gimmicknetwork.civpvpinventory;
 
-import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -112,28 +106,7 @@ public void invLoad(Player p, String[] args)
   
   public Boolean isAllowed(Player p)
   {
-	  boolean allowed = false;
-	  if(this.getConfig().getBoolean("useworldguard", false))
-	  {
-		  World world = p.getWorld();
-		  Location location = p.getLocation();
-		  ApplicableRegionSet set = WGBukkit.getRegionManager(world).getApplicableRegions(location);
-		  
-		  List<String> list = this.getConfig().getStringList("allowedregions");
-		  String[] allowedregions = list.toArray(new String[0]);
-		  
-		  for (ProtectedRegion region : set) {
-			  for(String r : allowedregions) {
-				  if(region.getId().equals(r))
-				  {
-					  allowed = true;
-				  }
-			  }
-		  }
-	  } else {
-		  allowed = true;
-	  }
-	  return allowed;
+	 return true;
 	  
   }
   
