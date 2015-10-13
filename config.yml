@@ -1,0 +1,5 @@
+#Civpvpinventory
+useworldguard: true
+allowedregions:
+  - spawn
+  - gear

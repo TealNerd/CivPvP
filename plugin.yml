@@ -1,0 +1,14 @@
+name: CivpvpInventory
+author: TeaJizzle
+version: 0.1
+main: com.gimmicknetwork.civpvpinventory.CivpvpInventory
+
+commands:
+  inv:
+    description: "Save/load inventories."
+    usage: "Usage: /inv save/load <inventory> or /inv clear."
+
+permissions:
+  civpvpinventory.use:
+    description: "use inventory saving/loading."
+    default: true
