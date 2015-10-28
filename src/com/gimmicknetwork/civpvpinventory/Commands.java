@@ -43,9 +43,18 @@ public class Commands implements CommandExecutor {
 				case "clear":
 					this.plugin.invClear(player);
 					return true;
+				case "addowner":
+					this.plugin.addOwner(player, args);
+					return true;
+				case "removeowner":
+					this.plugin.removeOwner(player, args);
+					return true;
+				case "transfer":
+					this.plugin.transferInv(player, args);
+					return true;
 				default:
 					player.sendMessage(ChatColor.RED
-							+ "Command not recognised, use /inv load <name>, /inv save <name> or /inv clear.");
+							+ "Command not recognised, use /inv load <name>, /inv save <name>, /inv addowner <inv> <name, /inv removeowner <inv> <name>, /inv transfer <inv> <name>, or /inv clear.");
 					return true;
 				}
 			} else {

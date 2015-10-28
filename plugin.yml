@@ -3,6 +3,8 @@ authors: [TeaJizzle, Maxopoly]
 version: 1.0
 main: com.gimmicknetwork.civpvpinventory.CivpvpInventory
 
+depend: [NameLayer]
+
 commands:
   inv:
     description: "Save/load inventories."
