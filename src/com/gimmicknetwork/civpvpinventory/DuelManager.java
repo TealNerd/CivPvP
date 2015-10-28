@@ -61,6 +61,8 @@ public class DuelManager {
 			runningDuels.put(second.getUniqueId(), first.getUniqueId());
 			first.sendMessage("You are now fighting " + second.getName());
 			second.sendMessage("You are now fighting " + first.getName());
+			first.getActivePotionEffects().clear();
+			second.getActivePotionEffects().clear();
 		}
 	}
 
