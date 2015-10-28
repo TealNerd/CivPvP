@@ -3,3 +3,9 @@ useworldguard: true
 allowedregions:
   - spawn
   - gear
+sql:
+  hostname: 'localhost'
+  port: 3306
+  dbname: 'civpvp'
+  username: 'root'
+  password: ''
