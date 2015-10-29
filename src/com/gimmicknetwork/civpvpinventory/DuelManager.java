@@ -44,7 +44,7 @@ public class DuelManager {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		for (Map.Entry<UUID, Integer> current : elo.entrySet()) {
+		/*for (Map.Entry<UUID, Integer> current : elo.entrySet()) {
 			int insertValue = current.getValue();
 			ListIterator<UUID> iter = ranks.listIterator();
 			while (true) {
@@ -59,7 +59,7 @@ public class DuelManager {
 					break;
 				}
 			}
-		}
+		} */
 	}
 	
 	public void fixRanking(UUID uuid) {
@@ -138,13 +138,13 @@ public class DuelManager {
 				+ ". You gained " + eloDif + " elo, total now: "
 				+ (elo.get(winnerUUID) + eloDif));
 		elo.put(winnerUUID, elo.get(winnerUUID) + eloDif);
-		fixRanking(winnerUUID);
+		//fixRanking(winnerUUID);
 		UUID loserUUID = loser.getUniqueId();
 		loser.sendMessage("You lost against " + winner.getName()
 				+ ". You lost " + eloDif + " elo, total now: "
 				+ (elo.get(loserUUID) - eloDif));
 		elo.put(loserUUID, elo.get(loserUUID) - eloDif);
-		fixRanking(loserUUID);
+		//fixRanking(loserUUID);
 		plugin.getLogger().log(
 				Level.INFO,
 				winner.getName() + "won against " + loser.getName()

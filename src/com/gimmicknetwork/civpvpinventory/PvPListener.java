@@ -1,5 +1,6 @@
 package com.gimmicknetwork.civpvpinventory;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -7,6 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -71,6 +73,23 @@ public class PvPListener implements Listener {
 			if (!dm.areDueling((Player) e.getEntity(), (Player)e.getDamager())) {
 				((Player)e.getDamager()).sendMessage("You are not fighting this player currently!");
 				e.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void playerThrowPotion(PotionSplashEvent e) {
+		if (! (e.getPotion().getShooter() instanceof Player)) {
+			return; 
+		}
+		Player thrower = (Player) (e.getPotion().getShooter());
+		for(LivingEntity le:e.getAffectedEntities()) {
+			if (!(le instanceof Player)) {
+				continue;
+			}
+			Player p = (Player) le;
+			if (!dm.areDueling(thrower, p) && p != thrower) {
+				e.setIntensity(p, 0D);
 			}
 		}
 	}
