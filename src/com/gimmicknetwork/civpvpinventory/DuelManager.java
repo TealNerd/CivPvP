@@ -2,12 +2,16 @@ package com.gimmicknetwork.civpvpinventory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class DuelManager {
 	private final int AVERAGE_ELO_GAIN = 20;
@@ -52,7 +56,25 @@ public class DuelManager {
 	public Integer getElo(Player p) {
 		return elo.get(p.getUniqueId());
 	}
+	
+	public int getRank(Player p) {
+		ArrayList<Integer> values = new ArrayList<Integer>();
+		for(int i : elo.values()) {
+			if(!values.contains(i)) {
+				values.add(i);
+			}
+		}
+		Collections.sort(values);
+		int size = values.size();
+		int playerElo = elo.get(p.getUniqueId());
+		int index = values.indexOf(playerElo);
+		return size - index;
+	}
 
+	public void checkElo(Player p) {
+		p.sendMessage(ChatColor.GOLD + "Your elo is " + getElo(p) + ", this makes your rank: " + getRank(p));
+	}
+	
 	public void startDuel(Player first, Player second) {
 		if (first != null && second != null) {
 			runningDuels.put(first.getUniqueId(), second.getUniqueId());

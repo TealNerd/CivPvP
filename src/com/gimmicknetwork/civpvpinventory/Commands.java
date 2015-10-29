@@ -131,6 +131,10 @@ public class Commands implements CommandExecutor {
 				return true;
 			}
 		}
+		if(cmd.getName().equalsIgnoreCase("elo")) {
+			plugin.getDuelManager().checkElo(player);
+			return true;
+		}
 		return false;
 	}
 }

@@ -32,6 +32,7 @@ public final class CivpvpInventory extends JavaPlugin {
 		getCommand("duel").setExecutor(c);
 		getCommand("accept").setExecutor(c);
 		getCommand("team").setExecutor(c);
+		getCommand("elo").setExecutor(c);
 	}
 
 	public void onDisable() {
