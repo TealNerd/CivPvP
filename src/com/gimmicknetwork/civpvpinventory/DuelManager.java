@@ -44,24 +44,16 @@ public class DuelManager {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		/*for (Map.Entry<UUID, Integer> current : elo.entrySet()) {
-			int insertValue = current.getValue();
-			ListIterator<UUID> iter = ranks.listIterator();
-			while (true) {
-				if (!iter.hasNext()) {
-					ranks.addLast(current.getKey());
-					break;
-				}
-				UUID u = iter.next();
-				if (elo.get(u) > insertValue) {
-					iter.previous();
-					iter.add(current.getKey());
-					break;
-				}
-			}
-		} */
+		/*
+		 * for (Map.Entry<UUID, Integer> current : elo.entrySet()) { int
+		 * insertValue = current.getValue(); ListIterator<UUID> iter =
+		 * ranks.listIterator(); while (true) { if (!iter.hasNext()) {
+		 * ranks.addLast(current.getKey()); break; } UUID u = iter.next(); if
+		 * (elo.get(u) > insertValue) { iter.previous();
+		 * iter.add(current.getKey()); break; } } }
+		 */
 	}
-	
+
 	public void fixRanking(UUID uuid) {
 		ranks.remove(uuid);
 		int insertValue = elo.get(uuid);
@@ -113,8 +105,11 @@ public class DuelManager {
 			runningDuels.put(second.getUniqueId(), first.getUniqueId());
 			first.sendMessage("You are now fighting " + second.getName());
 			second.sendMessage("You are now fighting " + first.getName());
-			first.getActivePotionEffects().clear();
-			second.getActivePotionEffects().clear();
+			Warp w = plugin.getWarpManager().getRandomWarp(first.getUniqueId());
+			if (w != null) {
+				w.tpFirst(first);
+				w.tpSecond(second);
+			}
 		}
 	}
 
@@ -138,19 +133,21 @@ public class DuelManager {
 				+ ". You gained " + eloDif + " elo, total now: "
 				+ (elo.get(winnerUUID) + eloDif));
 		elo.put(winnerUUID, elo.get(winnerUUID) + eloDif);
-		//fixRanking(winnerUUID);
+		// fixRanking(winnerUUID);
 		UUID loserUUID = loser.getUniqueId();
 		loser.sendMessage("You lost against " + winner.getName()
 				+ ". You lost " + eloDif + " elo, total now: "
 				+ (elo.get(loserUUID) - eloDif));
 		elo.put(loserUUID, elo.get(loserUUID) - eloDif);
-		//fixRanking(loserUUID);
+		// fixRanking(loserUUID);
 		plugin.getLogger().log(
 				Level.INFO,
 				winner.getName() + "won against " + loser.getName()
 						+ " elo diff:" + eloDif);
 		runningDuels.remove(loserUUID);
 		runningDuels.remove(winnerUUID);
+		CivpvpInventory.getInstance().getWarpManager().warpFreeAgain(loserUUID);
+		CivpvpInventory.getInstance().getWarpManager().warpFreeAgain(winnerUUID);
 		teleportToLobby(winner);
 		teleportToLobby(loser);
 	}
@@ -182,7 +179,7 @@ public class DuelManager {
 	}
 
 	public void teleportToLobby(Player p) {
-		// p.teleport(new Location(p.getWorld(), 0, 0, 0)); // TODO adjust
+		p.teleport(p.getWorld().getSpawnLocation());
 	}
 
 	public void firstTimeJoin(Player p) {

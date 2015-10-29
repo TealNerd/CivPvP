@@ -1,7 +1,9 @@
 package com.gimmicknetwork.civpvpinventory;
 
 import java.io.IOException;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,19 +14,22 @@ import vg.civcraft.mc.namelayer.NameAPI;
 public class Commands implements CommandExecutor {
 	private CivpvpInventory plugin;
 	private DuelManager dm;
+	private WarpManager wm;
 
 	public Commands(CivpvpInventory plugin) {
 		this.plugin = plugin;
 		dm = plugin.getDuelManager();
+		wm = plugin.getWarpManager();
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
 			String[] args) {
 		Player player;
 		if (!(sender instanceof Player)) {
-			if(cmd.getName().equalsIgnoreCase("inv") && args[0].equalsIgnoreCase("del")) {
+			if (cmd.getName().equalsIgnoreCase("inv")
+					&& args[0].equalsIgnoreCase("del")) {
 				String inv = args[1];
-				if(plugin.getKitManager().kitExists(inv)) {
+				if (plugin.getKitManager().kitExists(inv)) {
 					plugin.getKitManager().deleteKit(inv);
 				}
 			}
@@ -80,7 +85,8 @@ public class Commands implements CommandExecutor {
 				player.sendMessage("You have to specify a player you want to duel");
 				return true;
 			}
-			Player enemy = plugin.getServer().getPlayer(NameAPI.getUUID(args[0]));
+			Player enemy = plugin.getServer().getPlayer(
+					NameAPI.getUUID(args[0]));
 			if (enemy == null) {
 				player.sendMessage("This player is currently not online");
 				return true;
@@ -90,25 +96,26 @@ public class Commands implements CommandExecutor {
 				return true;
 			}
 			if (!dm.isInDuel(player)) {
-				dm.requestDuel(player,enemy);
-				enemy.sendMessage(player.getName()+ " requested to duel you, run /accept to fight");
-				player.sendMessage("Duel request sent to "+ enemy.getName());
+				dm.requestDuel(player, enemy);
+				enemy.sendMessage(player.getName()
+						+ " requested to duel you, run /accept to fight");
+				player.sendMessage("Duel request sent to " + enemy.getName());
 				return true;
-			}
-			else {
+			} else {
 				player.sendMessage("You are already in a duel");
 				return true;
 			}
-			
+
 		}
-		
-		if(cmd.getName().equalsIgnoreCase("team")) {
-			if(args.length == 0) {
-				player.sendMessage(ChatColor.RED + "Invalid arguments, please do /team create, /team invite <player>, /team accept <team>, or /team leave");
+
+		if (cmd.getName().equalsIgnoreCase("team")) {
+			if (args.length == 0) {
+				player.sendMessage(ChatColor.RED
+						+ "Invalid arguments, please do /team create, /team invite <player>, /team accept <team>, or /team leave");
 				return true;
 			}
-			if(args.length > 0) {
-				switch(args[0]) {
+			if (args.length > 0) {
+				switch (args[0]) {
 				case "create":
 					plugin.getTeamManager().addTeam(player);
 					return true;
@@ -122,12 +129,13 @@ public class Commands implements CommandExecutor {
 					plugin.getTeamManager().acceptInvite(player, args);
 					return true;
 				default:
-					player.sendMessage(ChatColor.RED + "Invalid arguments, please do /team create, /team invite <player>, /team accept <team>, or /team leave");
+					player.sendMessage(ChatColor.RED
+							+ "Invalid arguments, please do /team create, /team invite <player>, /team accept <team>, or /team leave");
 					return true;
 				}
 			}
 		}
-		
+
 		if (cmd.getName().equalsIgnoreCase("accept")) {
 			if (dm.isInDuel(player)) {
 				player.sendMessage("You are already in a duel");
@@ -136,15 +144,43 @@ public class Commands implements CommandExecutor {
 			if (dm.wasRequested(player)) {
 				dm.acceptDuel(player);
 				return true;
-			}
-			else {
+			} else {
 				player.sendMessage("Nothing to accept");
 				return true;
 			}
 		}
-		if(cmd.getName().equalsIgnoreCase("elo")) {
+		if (cmd.getName().equalsIgnoreCase("elo")) {
 			plugin.getDuelManager().checkElo(player);
 			return true;
+		}
+
+		if (cmd.getName().equalsIgnoreCase("warp")) {
+			if (args.length == 0) {
+				player.sendMessage(ChatColor.RED + "Specify an argument");
+				return true;
+			}
+			if (args.length < 2) {
+				player.sendMessage("You have to specify the name of the warp");
+				return false;
+			}
+			switch (args[0]) {
+			case "create":
+				Location first = player.getLocation().getBlock().getLocation();
+				wm.addWarp(new Warp(args[1],first));
+				return true;
+			case "second":
+				Location second = player.getLocation().getBlock().getLocation();
+				wm.getWarp(args[1]).setSecond(second);
+				return true;
+			case "first":
+				Location firstW = player.getLocation().getBlock().getLocation();
+				wm.getWarp(args[1]).setFirst(firstW);
+				return true;
+			case "delete":
+				wm.removeWarp(args[1]);
+				return true;
+			}
+
 		}
 		return false;
 	}
