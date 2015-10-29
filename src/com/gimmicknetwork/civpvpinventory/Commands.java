@@ -91,6 +91,32 @@ public class Commands implements CommandExecutor {
 			
 		}
 		
+		if(cmd.getName().equalsIgnoreCase("team")) {
+			if(args.length == 0) {
+				player.sendMessage(ChatColor.RED + "Invalid arguments, please do /team create, /team invite <player>, /team accept <team>, or /team leave");
+				return true;
+			}
+			if(args.length > 0) {
+				switch(args[0]) {
+				case "create":
+					plugin.getTeamManager().addTeam(player);
+					return true;
+				case "invite":
+					plugin.getTeamManager().invitePlayer(player, args[1]);
+					return true;
+				case "leave":
+					plugin.getTeamManager().leaveTeam(player);
+					return true;
+				case "accept":
+					plugin.getTeamManager().acceptInvite(player, args[1]);
+					return true;
+				default:
+					player.sendMessage(ChatColor.RED + "Invalid arguments, please do /team create, /team invite <player>, /team accept <team>, or /team leave");
+					return true;
+				}
+			}
+		}
+		
 		if (cmd.getName().equalsIgnoreCase("accept")) {
 			if (dm.isInDuel(player)) {
 				player.sendMessage("You are already in a duel");

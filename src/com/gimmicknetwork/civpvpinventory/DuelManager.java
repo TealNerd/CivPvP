@@ -1,7 +1,5 @@
 package com.gimmicknetwork.civpvpinventory;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -9,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class DuelManager {
@@ -23,22 +20,23 @@ public class DuelManager {
 
 	public DuelManager(CivpvpInventory plugin, Database db) {
 		this.plugin = plugin;
+		this.db = db;
 	}
 
 	public void loadElos() {
 		try {
-			db.execute("CREATE TABLE IF NOT EXISTS elos (uuid VARCHAR(40) not null unique, elo INT not null)");
+			db.execute("CREATE TABLE IF NOT EXISTS elos (uuid VARCHAR(40) not null unique, elo INT(255) not null)");
 			PreparedStatement selectElos = db.prepareStatement("SELECT * FROM elos");
 			ResultSet elos = selectElos.executeQuery();
 			while(elos.next()) {
-				elo.put(UUID.fromString(elos.getString("uuid")), elos.getInt("elo"));
+				elo.put(UUID.fromString(elos.getString("uuid").trim()), elos.getInt("elo"));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	public void saveElosToFile() {
+	public void saveElos() {
 		try {
 			PreparedStatement setElo = db.prepareStatement("REPLACE INTO elos (uuid,elo) VALUES (?,?)");
 			for (Map.Entry<UUID, Integer> current : elo.entrySet()) {
