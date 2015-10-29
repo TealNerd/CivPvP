@@ -1,6 +1,6 @@
 name: CivPvP
-authors: [TeaJizzle, Maxopoly]
-version: 1.0
+authors: [TeaJizzle, Maxopoly, TealNerd]
+version: 1.1
 main: com.gimmicknetwork.civpvpinventory.CivpvpInventory
 
 depend: [NameLayer]
@@ -12,11 +12,19 @@ commands:
     permission: civpvpinventory.use
   duel:
     description: Requests to duel someone
-    usage: /duel <playername>
+    usage: "/duel <playername> or /duel team <playername>"
     permission: civpvpinventory.use
   accept:
     description: Accept the last duel request
-    usage: /accept
+    usage: "/accept"
+    permission: civpvpinventory.use
+  team:
+    description: "Make and manage teams"
+    usage: "Usage: /team create, /team invite <player>, or /team leave"
+    permission: civpvpinventory.use
+  elo:
+    description: "Check your elo!"
+    usage: "Usage: /elo"
     permission: civpvpinventory.use
 
 permissions:

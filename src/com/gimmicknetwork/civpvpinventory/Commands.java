@@ -20,6 +20,12 @@ public class Commands implements CommandExecutor {
 			String[] args) {
 		Player player;
 		if (!(sender instanceof Player)) {
+			if(cmd.getName().equalsIgnoreCase("inv") && args[0].equalsIgnoreCase("del")) {
+				String inv = args[1];
+				if(plugin.getKitManager().kitExists(inv)) {
+					plugin.getKitManager().deleteKit(inv);
+				}
+			}
 			sender.sendMessage("This command can only be run by a player.");
 			return true;
 		} else {
@@ -51,6 +57,9 @@ public class Commands implements CommandExecutor {
 					return true;
 				case "transfer":
 					this.plugin.transferInv(player, args);
+					return true;
+				case "del":
+					this.plugin.deleteInv(player, args);
 					return true;
 				default:
 					player.sendMessage(ChatColor.RED
