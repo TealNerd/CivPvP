@@ -119,6 +119,21 @@ public final class CivpvpInventory extends JavaPlugin {
 		}
 	}	
 	
+	public void deleteInv(Player p, String[] args) {
+		if(args.length != 2) {
+			p.sendMessage(ChatColor.RED + "Invalid arguments, do /inv del <inventory>");
+		} else {
+			String inv = args[1];
+			if(!invExists(inv)) {
+				p.sendMessage(ChatColor.RED + "The inventory " + inv + " does not exist");
+			} else if(km.getKitByName(inv).getOwner().equals(p.getUniqueId()) || p.hasPermission("civpvp.badmin")){
+				km.deleteKit(inv);
+			} else {
+				p.sendMessage(ChatColor.RED + "You are not the owner of this inventory, you cannot delete it");
+			}
+		}
+	}
+	
 	public void invLoad(Player p, String[] args) {
 		if (dm.isInDuel(p)) {
 			p.sendMessage("Nice try");

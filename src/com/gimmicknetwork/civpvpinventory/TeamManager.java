@@ -29,7 +29,12 @@ public class TeamManager {
 		}
 	}
 
-	public void acceptInvite(Player p, String teamName) {
+	public void acceptInvite(Player p, String[] args) {
+		if(args.length < 2) {
+			p.sendMessage(ChatColor.RED + "You didn't enter a team to join silly!");
+			return;
+		}
+		String teamName = args[1];
 		if(NameAPI.getUUID(teamName) == null) {
 			p.sendMessage(ChatColor.RED + "The player who's team you tried to join does not exist or has not joined this server");
 		} else if(!inviteExists(NameAPI.getUUID(teamName), p.getUniqueId())) {
@@ -40,7 +45,12 @@ public class TeamManager {
 		}
 	}
 	
-	public void invitePlayer(Player p, String invitee) {
+	public void invitePlayer(Player p, String[] args) {
+		if(args.length < 2) {
+			p.sendMessage(ChatColor.RED + "You have to invite someone, do /team invite <player>");
+			return;
+		}
+		String invitee = args[1];
 		if(NameAPI.getUUID(invitee) == null) {
 			p.sendMessage(ChatColor.RED + "The player you tried to invite does not exist or has not joined this server");
 		} else if(!ownsTeam(p.getUniqueId())) {
@@ -48,10 +58,15 @@ public class TeamManager {
 		} else if(inviteExists(p.getUniqueId(), NameAPI.getUUID(invitee))) {
 			p.sendMessage(ChatColor.RED + "You have already invited " + invitee + " to join your team");
 		} else {
+			Player invited = CivpvpInventory.getInstance().getServer().getPlayer(NameAPI.getUUID(invitee));
+			if(invited == null) {
+				p.sendMessage(ChatColor.RED + "Player not found, try again");
+				return;
+			}
 			invites.put(p.getUniqueId(), NameAPI.getUUID(invitee));
 			p.sendMessage(ChatColor.GREEN + "You have invited " + invitee + " to your team");
 			String name = NameAPI.getCurrentName(p.getUniqueId());
-			CivpvpInventory.getInstance().getServer().getPlayer(NameAPI.getUUID(invitee)).sendMessage(ChatColor.GREEN + "You have been invited to " + name + "'s team. Do /team accept " + name + " to join");
+			invited.sendMessage(ChatColor.GREEN + "You have been invited to " + name + "'s team, do /team accept " + name + " to join");
 		}
 	}
 	
