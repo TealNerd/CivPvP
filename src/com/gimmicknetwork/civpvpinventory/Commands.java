@@ -113,13 +113,13 @@ public class Commands implements CommandExecutor {
 					plugin.getTeamManager().addTeam(player);
 					return true;
 				case "invite":
-					plugin.getTeamManager().invitePlayer(player, args[1]);
+					plugin.getTeamManager().invitePlayer(player, args);
 					return true;
 				case "leave":
 					plugin.getTeamManager().leaveTeam(player);
 					return true;
 				case "accept":
-					plugin.getTeamManager().acceptInvite(player, args[1]);
+					plugin.getTeamManager().acceptInvite(player, args);
 					return true;
 				default:
 					player.sendMessage(ChatColor.RED + "Invalid arguments, please do /team create, /team invite <player>, /team accept <team>, or /team leave");
