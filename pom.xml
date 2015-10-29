@@ -4,7 +4,7 @@
 
 	<groupId>unitive.is.a.nerd</groupId>
 	<artifactId>CivPvP</artifactId>
-	<version>1.1</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>CivPvp</name>

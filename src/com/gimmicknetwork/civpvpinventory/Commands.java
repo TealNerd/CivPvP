@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.NameAPI;
+
 public class Commands implements CommandExecutor {
 	private CivpvpInventory plugin;
 	private DuelManager dm;
@@ -78,7 +80,7 @@ public class Commands implements CommandExecutor {
 				player.sendMessage("You have to specify a player you want to duel");
 				return true;
 			}
-			Player enemy = plugin.getServer().getPlayer(args[0]);
+			Player enemy = plugin.getServer().getPlayer(NameAPI.getUUID(args[0]));
 			if (enemy == null) {
 				player.sendMessage("This player is currently not online");
 				return true;
