@@ -47,6 +47,7 @@ public class PvPListener implements Listener {
 	@EventHandler
 	public void playerDeath(EntityDeathEvent e) {
 		if (e.getEntity() instanceof Player) {
+			e.getDrops().clear();
 			Player p = (Player) e.getEntity();
 			if (dm.isInDuel(p)) {
 				dm.playerLostDuel(p);
