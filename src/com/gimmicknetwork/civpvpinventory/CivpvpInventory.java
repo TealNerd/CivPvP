@@ -13,13 +13,17 @@ public final class CivpvpInventory extends JavaPlugin {
 	private DuelManager dm;
 	private KitManager km;
 	private Database db;
+	private TeamManager tm;
+	private static CivpvpInventory instance;
 
 	public void onEnable() {
+		instance = this;
 		this.saveDefaultConfig();
 		initializeDB();
 		km = new KitManager(db);
 		dm = new DuelManager(this, db);
 		dm.loadElos();
+		tm = new TeamManager();
 		getServer().getPluginManager().registerEvents(new PvPListener(this),
 				this);
 		getLogger().info("[CivpvpInventory] plugin enabled!");
@@ -27,11 +31,12 @@ public final class CivpvpInventory extends JavaPlugin {
 		getCommand("inv").setExecutor(c);
 		getCommand("duel").setExecutor(c);
 		getCommand("accept").setExecutor(c);
+		getCommand("team").setExecutor(c);
 	}
 
 	public void onDisable() {
 		getLogger().info("[CivpvpInventory] plugin disabled!");
-		dm.saveElosToFile();
+		dm.saveElos();
 	}
 
 	public void invSave(Player p, String[] args) throws IOException {
@@ -111,9 +116,8 @@ public final class CivpvpInventory extends JavaPlugin {
 				km.transferOwner(inv, NameAPI.getUUID(owner));
 			}
 		}
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	}	
+	
 	public void invLoad(Player p, String[] args) {
 		if (dm.isInDuel(p)) {
 			p.sendMessage("Nice try");
@@ -152,6 +156,22 @@ public final class CivpvpInventory extends JavaPlugin {
 
 	public DuelManager getDuelManager() {
 		return dm;
+	}
+	
+	public KitManager getKitManager() {
+		return km;
+	}
+	
+	public Database getDB() {
+		return db;
+	}
+	
+	public TeamManager getTeamManager() {
+		return tm;
+	}
+	
+	public static CivpvpInventory getInstance() {
+		return instance;
 	}
 
 	public void initializeDB() {

@@ -13,10 +13,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PvPListener implements Listener {
 	CivpvpInventory plugin;
 	DuelManager dm;
+	TeamManager tm;
 
 	public PvPListener(CivpvpInventory plugin) {
 		this.plugin = plugin;
 		this.dm = plugin.getDuelManager();
+		this.tm = plugin.getTeamManager();
 	}
 
 	@EventHandler
@@ -56,6 +58,9 @@ public class PvPListener implements Listener {
 	public void combatLog(PlayerQuitEvent e) {
 		if (dm.isInDuel(e.getPlayer())) {
 			dm.playerLostDuel(e.getPlayer());
+		}
+		if(tm.playerHasTeam(e.getPlayer().getUniqueId())) {
+			tm.leaveTeam(e.getPlayer());
 		}
 	}
 	

@@ -23,10 +23,14 @@ public class KitManager {
 			PreparedStatement getKit = db.prepareStatement("SELECT * FROM kits WHERE name = ?");
 			getKit.setString(1, name);
 			ResultSet set = getKit.executeQuery();
-			return set.first();
+			if(set.next()) {
+				String kit = set.getString("name");
+				return kit.equals(name);
+			}
 		} catch (Exception ex) {
 			return false;
 		}
+		return false;
 	}
 	
 	public Kit getKitByName(String name) {
@@ -129,7 +133,7 @@ public class KitManager {
 						for(Enchantment e : is.getEnchantments().keySet()) {
 							enchantments.append(e.getName()).append("|").append(is.getEnchantmentLevel(e)).append(",");
 						}
-						insertItem.setString(3, enchantments.toString().substring(0, enchantments.toString().length() - 2));
+						insertItem.setString(3, enchantments.toString().substring(0, enchantments.toString().length() - 1));
 					} else {
 						insertItem.setString(3, null);
 					}
@@ -148,7 +152,7 @@ public class KitManager {
 						for(Enchantment e : is.getEnchantments().keySet()) {
 							enchantments.append(e.getName()).append("|").append(is.getEnchantmentLevel(e)).append(",");
 						}
-						insertItem.setString(3, enchantments.toString().substring(0, enchantments.toString().length() - 2));
+						insertItem.setString(3, enchantments.toString().substring(0, enchantments.toString().length() - 1));
 					} else {
 						insertItem.setString(3, null);
 					}
@@ -188,7 +192,7 @@ public class KitManager {
 						for(Enchantment e : is.getEnchantments().keySet()) {
 							enchantments.append(e.getName()).append("|").append(is.getEnchantmentLevel(e)).append(",");
 						}
-						insertItem.setString(3, enchantments.toString().substring(0, enchantments.toString().length() - 2));
+						insertItem.setString(3, enchantments.toString().substring(0, enchantments.toString().length() - 1));
 					} else {
 						insertItem.setString(3, null);
 					}
