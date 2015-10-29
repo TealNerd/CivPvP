@@ -58,10 +58,15 @@ public class TeamManager {
 		} else if(inviteExists(p.getUniqueId(), NameAPI.getUUID(invitee))) {
 			p.sendMessage(ChatColor.RED + "You have already invited " + invitee + " to join your team");
 		} else {
+			Player invited = CivpvpInventory.getInstance().getServer().getPlayer(NameAPI.getUUID(invitee));
+			if(invited == null) {
+				p.sendMessage(ChatColor.RED + "Player not found, try again");
+				return;
+			}
 			invites.put(p.getUniqueId(), NameAPI.getUUID(invitee));
 			p.sendMessage(ChatColor.GREEN + "You have invited " + invitee + " to your team");
 			String name = NameAPI.getCurrentName(p.getUniqueId());
-			CivpvpInventory.getInstance().getServer().getPlayer(NameAPI.getUUID(invitee)).sendMessage(ChatColor.GREEN + "You have been invited to " + name + "'s team. Do /team accept " + name + " to join");
+			invited.sendMessage(ChatColor.GREEN + "You have been invited to " + name + "'s team, do /team accept " + name + " to join");
 		}
 	}
 	
