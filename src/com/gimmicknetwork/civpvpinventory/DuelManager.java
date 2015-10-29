@@ -72,7 +72,7 @@ public class DuelManager {
 	}
 
 	public void checkElo(Player p) {
-		p.sendMessage(ChatColor.GOLD + "Your elo is " + getElo(p) + ", this makes your rank: " + getRank(p));
+		p.sendMessage(ChatColor.GOLD + "Your elo is " + getElo(p));// + ", this makes your rank: " + getRank(p));
 	}
 	
 	public void startDuel(Player first, Player second) {
