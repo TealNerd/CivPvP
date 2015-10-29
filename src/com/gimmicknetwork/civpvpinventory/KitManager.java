@@ -235,7 +235,7 @@ public class KitManager {
 		try {
 			db.execute("DROP TABLE " + kit + "_items");
 			db.execute("DROP TABLE " + kit + "_owners");
-			PreparedStatement removeKit = db.prepareStatement("DELETE * FROM kits WHERE owner = ?");
+			PreparedStatement removeKit = db.prepareStatement("DELETE FROM kits WHERE owner = ?");
 			removeKit.setString(1, kit);
 			removeKit.execute();
 		} catch (Exception ex) {
