@@ -29,7 +29,12 @@ public class TeamManager {
 		}
 	}
 
-	public void acceptInvite(Player p, String teamName) {
+	public void acceptInvite(Player p, String[] args) {
+		if(args.length < 2) {
+			p.sendMessage(ChatColor.RED + "You didn't enter a team to join silly!");
+			return;
+		}
+		String teamName = args[1];
 		if(NameAPI.getUUID(teamName) == null) {
 			p.sendMessage(ChatColor.RED + "The player who's team you tried to join does not exist or has not joined this server");
 		} else if(!inviteExists(NameAPI.getUUID(teamName), p.getUniqueId())) {
@@ -40,7 +45,12 @@ public class TeamManager {
 		}
 	}
 	
-	public void invitePlayer(Player p, String invitee) {
+	public void invitePlayer(Player p, String[] args) {
+		if(args.length < 2) {
+			p.sendMessage(ChatColor.RED + "You have to invite someone, do /team invite <player>");
+			return;
+		}
+		String invitee = args[1];
 		if(NameAPI.getUUID(invitee) == null) {
 			p.sendMessage(ChatColor.RED + "The player you tried to invite does not exist or has not joined this server");
 		} else if(!ownsTeam(p.getUniqueId())) {

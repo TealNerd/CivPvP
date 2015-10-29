@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.NameAPI;
+
 public class Commands implements CommandExecutor {
 	private CivpvpInventory plugin;
 	private DuelManager dm;
@@ -20,6 +22,12 @@ public class Commands implements CommandExecutor {
 			String[] args) {
 		Player player;
 		if (!(sender instanceof Player)) {
+			if(cmd.getName().equalsIgnoreCase("inv") && args[0].equalsIgnoreCase("del")) {
+				String inv = args[1];
+				if(plugin.getKitManager().kitExists(inv)) {
+					plugin.getKitManager().deleteKit(inv);
+				}
+			}
 			sender.sendMessage("This command can only be run by a player.");
 			return true;
 		} else {
@@ -52,6 +60,9 @@ public class Commands implements CommandExecutor {
 				case "transfer":
 					this.plugin.transferInv(player, args);
 					return true;
+				case "del":
+					this.plugin.deleteInv(player, args);
+					return true;
 				default:
 					player.sendMessage(ChatColor.RED
 							+ "Command not recognised, use /inv load <name>, /inv save <name>, /inv addowner <inv> <name, /inv removeowner <inv> <name>, /inv transfer <inv> <name>, or /inv clear.");
@@ -69,7 +80,7 @@ public class Commands implements CommandExecutor {
 				player.sendMessage("You have to specify a player you want to duel");
 				return true;
 			}
-			Player enemy = plugin.getServer().getPlayer(args[0]);
+			Player enemy = plugin.getServer().getPlayer(NameAPI.getUUID(args[0]));
 			if (enemy == null) {
 				player.sendMessage("This player is currently not online");
 				return true;
@@ -102,13 +113,13 @@ public class Commands implements CommandExecutor {
 					plugin.getTeamManager().addTeam(player);
 					return true;
 				case "invite":
-					plugin.getTeamManager().invitePlayer(player, args[1]);
+					plugin.getTeamManager().invitePlayer(player, args);
 					return true;
 				case "leave":
 					plugin.getTeamManager().leaveTeam(player);
 					return true;
 				case "accept":
-					plugin.getTeamManager().acceptInvite(player, args[1]);
+					plugin.getTeamManager().acceptInvite(player, args);
 					return true;
 				default:
 					player.sendMessage(ChatColor.RED + "Invalid arguments, please do /team create, /team invite <player>, /team accept <team>, or /team leave");

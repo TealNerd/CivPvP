@@ -230,4 +230,16 @@ public class KitManager {
 			ex.printStackTrace();
 		}
 	}
+	
+	public void deleteKit(String kit) {
+		try {
+			db.execute("DROP TABLE " + kit + "_items");
+			db.execute("DROP TABLE " + kit + "_owners");
+			PreparedStatement removeKit = db.prepareStatement("DELETE * FROM kits WHERE owner = ?");
+			removeKit.setString(1, kit);
+			removeKit.execute();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }
