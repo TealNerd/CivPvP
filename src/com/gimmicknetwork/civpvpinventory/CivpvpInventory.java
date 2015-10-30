@@ -14,6 +14,7 @@ public final class CivpvpInventory extends JavaPlugin {
 	private KitManager km;
 	private Database db;
 	private TeamManager tm;
+	private WarpManager wm;
 	private static CivpvpInventory instance;
 
 	public void onEnable() {
@@ -24,6 +25,7 @@ public final class CivpvpInventory extends JavaPlugin {
 		dm = new DuelManager(this, db);
 		dm.loadElos();
 		tm = new TeamManager();
+		wm = new WarpManager();
 		getServer().getPluginManager().registerEvents(new PvPListener(this),
 				this);
 		getLogger().info("[CivpvpInventory] plugin enabled!");
@@ -33,11 +35,13 @@ public final class CivpvpInventory extends JavaPlugin {
 		getCommand("accept").setExecutor(c);
 		getCommand("team").setExecutor(c);
 		getCommand("elo").setExecutor(c);
+		getCommand("warp").setExecutor(c);
 	}
 
 	public void onDisable() {
 		getLogger().info("[CivpvpInventory] plugin disabled!");
 		dm.saveElos();
+		wm.saveWarps();
 	}
 
 	public void invSave(Player p, String[] args) throws IOException {
@@ -184,6 +188,10 @@ public final class CivpvpInventory extends JavaPlugin {
 	
 	public TeamManager getTeamManager() {
 		return tm;
+	}
+	
+	public WarpManager getWarpManager() {
+		return wm;
 	}
 	
 	public static CivpvpInventory getInstance() {

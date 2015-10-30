@@ -26,7 +26,10 @@ commands:
     description: "Check your elo!"
     usage: "Usage: /elo"
     permission: civpvpinventory.use
-
+  warp:
+    description: "Add and remove warps for duels"
+    usage: "/warp create/first/second"
+    permission: civpvp.badmin
 permissions:
   civpvpinventory.use:
     description: "use inventory saving/loading."

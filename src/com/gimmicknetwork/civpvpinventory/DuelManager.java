@@ -5,6 +5,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -20,6 +23,7 @@ public class DuelManager {
 	private HashMap<UUID, Integer> elo = new HashMap<UUID, Integer>();
 	private HashMap<UUID, UUID> runningDuels = new HashMap<UUID, UUID>();
 	private HashMap<UUID, UUID> requestedDuels = new HashMap<UUID, UUID>();
+	private LinkedList<UUID> ranks = new LinkedList<UUID>();
 	private Database db;
 
 	public DuelManager(CivpvpInventory plugin, Database db) {
@@ -30,19 +34,48 @@ public class DuelManager {
 	public void loadElos() {
 		try {
 			db.execute("CREATE TABLE IF NOT EXISTS elos (uuid VARCHAR(40) not null unique, elo INT(255) not null)");
-			PreparedStatement selectElos = db.prepareStatement("SELECT * FROM elos");
+			PreparedStatement selectElos = db
+					.prepareStatement("SELECT * FROM elos");
 			ResultSet elos = selectElos.executeQuery();
-			while(elos.next()) {
-				elo.put(UUID.fromString(elos.getString("uuid").trim()), elos.getInt("elo"));
+			while (elos.next()) {
+				elo.put(UUID.fromString(elos.getString("uuid").trim()),
+						elos.getInt("elo"));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		/*
+		 * for (Map.Entry<UUID, Integer> current : elo.entrySet()) { int
+		 * insertValue = current.getValue(); ListIterator<UUID> iter =
+		 * ranks.listIterator(); while (true) { if (!iter.hasNext()) {
+		 * ranks.addLast(current.getKey()); break; } UUID u = iter.next(); if
+		 * (elo.get(u) > insertValue) { iter.previous();
+		 * iter.add(current.getKey()); break; } } }
+		 */
 	}
-	
+
+	public void fixRanking(UUID uuid) {
+		ranks.remove(uuid);
+		int insertValue = elo.get(uuid);
+		ListIterator<UUID> iter = ranks.listIterator();
+		while (iter.next() != null) {
+			if (!iter.hasNext()) {
+				ranks.addLast(uuid);
+				break;
+			}
+			UUID u = iter.next();
+			if (elo.get(u) > insertValue) {
+				iter.previous();
+				iter.add(uuid);
+				break;
+			}
+		}
+	}
+
 	public void saveElos() {
 		try {
-			PreparedStatement setElo = db.prepareStatement("REPLACE INTO elos (uuid,elo) VALUES (?,?)");
+			PreparedStatement setElo = db
+					.prepareStatement("REPLACE INTO elos (uuid,elo) VALUES (?,?)");
 			for (Map.Entry<UUID, Integer> current : elo.entrySet()) {
 				setElo.setString(1, current.getKey().toString());
 				setElo.setInt(2, current.getValue());
@@ -56,33 +89,27 @@ public class DuelManager {
 	public Integer getElo(Player p) {
 		return elo.get(p.getUniqueId());
 	}
-	
+
 	public int getRank(Player p) {
-		ArrayList<Integer> values = new ArrayList<Integer>();
-		for(int i : elo.values()) {
-			if(!values.contains(i)) {
-				values.add(i);
-			}
-		}
-		Collections.sort(values);
-		int size = values.size();
-		int playerElo = elo.get(p.getUniqueId());
-		int index = values.indexOf(playerElo);
-		return size - index;
+		return ranks.indexOf(p.getUniqueId());
 	}
 
 	public void checkElo(Player p) {
-		p.sendMessage(ChatColor.GOLD + "Your elo is " + getElo(p));// + ", this makes your rank: " + getRank(p));
+		p.sendMessage(ChatColor.GOLD + "Your elo is " + getElo(p)
+				+ ", this makes your rank: " + getRank(p));
 	}
-	
+
 	public void startDuel(Player first, Player second) {
 		if (first != null && second != null) {
 			runningDuels.put(first.getUniqueId(), second.getUniqueId());
 			runningDuels.put(second.getUniqueId(), first.getUniqueId());
 			first.sendMessage("You are now fighting " + second.getName());
 			second.sendMessage("You are now fighting " + first.getName());
-			first.getActivePotionEffects().clear();
-			second.getActivePotionEffects().clear();
+			Warp w = plugin.getWarpManager().getRandomWarp(first.getUniqueId());
+			if (w != null) {
+				w.tpFirst(first);
+				w.tpSecond(second);
+			}
 		}
 	}
 
@@ -106,17 +133,21 @@ public class DuelManager {
 				+ ". You gained " + eloDif + " elo, total now: "
 				+ (elo.get(winnerUUID) + eloDif));
 		elo.put(winnerUUID, elo.get(winnerUUID) + eloDif);
+		// fixRanking(winnerUUID);
 		UUID loserUUID = loser.getUniqueId();
 		loser.sendMessage("You lost against " + winner.getName()
 				+ ". You lost " + eloDif + " elo, total now: "
 				+ (elo.get(loserUUID) - eloDif));
 		elo.put(loserUUID, elo.get(loserUUID) - eloDif);
+		// fixRanking(loserUUID);
 		plugin.getLogger().log(
 				Level.INFO,
 				winner.getName() + "won against " + loser.getName()
 						+ " elo diff:" + eloDif);
 		runningDuels.remove(loserUUID);
 		runningDuels.remove(winnerUUID);
+		CivpvpInventory.getInstance().getWarpManager().warpFreeAgain(loserUUID);
+		CivpvpInventory.getInstance().getWarpManager().warpFreeAgain(winnerUUID);
 		teleportToLobby(winner);
 		teleportToLobby(loser);
 	}
@@ -148,7 +179,7 @@ public class DuelManager {
 	}
 
 	public void teleportToLobby(Player p) {
-		// p.teleport(new Location(p.getWorld(), 0, 0, 0)); // TODO adjust
+		p.teleport(p.getWorld().getSpawnLocation());
 	}
 
 	public void firstTimeJoin(Player p) {
@@ -158,7 +189,7 @@ public class DuelManager {
 	public boolean wasRequested(Player p) {
 		return requestedDuels.containsKey(p.getUniqueId());
 	}
-	
+
 	public boolean areDueling(Player a, Player b) {
 		return runningDuels.get(a.getUniqueId()) == b.getUniqueId();
 	}
