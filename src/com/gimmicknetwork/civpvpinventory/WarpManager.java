@@ -85,7 +85,7 @@ public class WarpManager {
 	}
 
 	public Warp getRandomWarp(UUID uuid) {
-		Warp[] w = (Warp[]) (warps.keySet().toArray());
+		Warp[] w = warps.values().toArray(new Warp [warps.values().size()]);
 		if (w.length == occupiedWarps.size()) {
 			return null;
 		}

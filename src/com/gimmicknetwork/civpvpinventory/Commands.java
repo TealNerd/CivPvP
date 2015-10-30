@@ -166,15 +166,28 @@ public class Commands implements CommandExecutor {
 			switch (args[0]) {
 			case "create":
 				Location first = player.getLocation().getBlock().getLocation();
-				wm.addWarp(new Warp(args[1],first));
+				wm.addWarp(new Warp(args[1], first));
+				player.sendMessage(args[1]+ " created and first warp set");
 				return true;
 			case "second":
 				Location second = player.getLocation().getBlock().getLocation();
-				wm.getWarp(args[1]).setSecond(second);
+				Warp ww = wm.getWarp(args[1]);
+				if (ww == null) {
+					player.sendMessage("This warp doesnt exist");
+					return true;
+				}
+				ww.setSecond(second);
+				player.sendMessage(args[1]+ " second location set");
 				return true;
 			case "first":
 				Location firstW = player.getLocation().getBlock().getLocation();
-				wm.getWarp(args[1]).setFirst(firstW);
+				Warp www = wm.getWarp(args[1]);
+				if (www == null) {
+					player.sendMessage("This warp doesnt exist");
+					return true;
+				}
+				www.setFirst(firstW);
+				player.sendMessage(args[1]+ " first location set");
 				return true;
 			case "delete":
 				wm.removeWarp(args[1]);

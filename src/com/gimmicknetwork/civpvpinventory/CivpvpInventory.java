@@ -41,6 +41,7 @@ public final class CivpvpInventory extends JavaPlugin {
 	public void onDisable() {
 		getLogger().info("[CivpvpInventory] plugin disabled!");
 		dm.saveElos();
+		wm.saveWarps();
 	}
 
 	public void invSave(Player p, String[] args) throws IOException {

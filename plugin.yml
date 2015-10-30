@@ -28,7 +28,7 @@ commands:
     permission: civpvpinventory.use
   warp:
     description: "Add and remove warps for duels"
-    usage: "/warp create/first/second
+    usage: "/warp create/first/second"
     permission: civpvp.badmin
 permissions:
   civpvpinventory.use:
